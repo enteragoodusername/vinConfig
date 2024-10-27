@@ -24,11 +24,15 @@ Plug('hrsh7th/vim-vsnip')
 Plug('folke/trouble.nvim')
 Plug('folke/lsp-colors.nvim')
 Plug('nvim-tree/nvim-web-devicons')
+Plug('mbbill/undotree')
+Plug('~/taskPlugin')
+
 vim.call('plug#end');
 
 vim.cmd('set autoindent')
 vim.cmd('colorscheme everforest')
 vim.cmd('set background=dark')
+vim.cmd('set undofile')
 
 vim.cmd('set number relativenumber')
 vim.cmd('set nu rnu')
@@ -41,7 +45,15 @@ require("mason-lspconfig").setup_handlers {
 	-- and will be called for each installed server that doesn't have
 	-- a dedicated handler.
 	function (server_name) -- default handler (optional)
-	    require("lspconfig")[server_name].setup {}
+	    require("lspconfig")[server_name].setup {
+		settings = {
+			Lua = {
+				diagnostics = {
+					globals = {'vim'}
+				}
+
+			}		}
+	    }
 	end
 }
 
@@ -52,6 +64,18 @@ require'cmp'.setup {
     { name = 'nvim_lsp' }
   }
 }
+vim.opt.backup = false
+vim.opt.swapfile = false
+if vim.loop.os_uname().sysname == "Windows_NT" then
+	vim.opt.undodir = './.undodir'
+	vim.g.undotree_DiffCommand = "FC"
+end
+
+vim.opt.undofile = true
+
+
+
+
 
 -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
